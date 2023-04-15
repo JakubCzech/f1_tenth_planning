@@ -3,6 +3,10 @@ project(f1_planning)
 
 # require that dependencies from package.xml be available
 find_package(ament_cmake_auto REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+
 ament_auto_find_build_dependencies(REQUIRED
   ${${PROJECT_NAME}_BUILD_DEPENDS}
   ${${PROJECT_NAME}_BUILDTOOL_DEPENDS}
@@ -23,7 +27,9 @@ ament_auto_add_library(${PROJECT_NAME} SHARED
   ${F1_PLANNING_LIB_SRC}
   ${F1_PLANNING_LIB_HEADERS}
 )
-
+link_directories(std_msgs)
+link_directories(navigation_msgs)
+link_directories(geometry_msgs)
 set(F1_PLANNING_NODE_SRC
   src/f1_planning_node.cpp
 )

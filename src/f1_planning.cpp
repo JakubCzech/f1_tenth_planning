@@ -28,10 +28,5 @@ void F1Planning::setParameters(int64_t param_name)
   param_name_ = param_name;
 }
 
-int64_t F1Planning::printHello() const
-{
-  std::cout << "Hello World, " << param_name_ << std::endl;
-  return param_name_;
-}
 
 }  // namespace f1_planning

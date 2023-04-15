@@ -17,7 +17,17 @@
 
 #include <memory>
 #include <rclcpp/rclcpp.hpp>
+#include "sensor_msgs/msg/laser_scan.hpp"
+#include "nav_msgs/msg/odometry.hpp"
+#include "geometry_msgs/msg/twist.hpp"
+#include "geometry_msgs/msg/point_stamped.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "visualization_msgs/msg/marker.hpp"
+#include <autoware_auto_control_msgs/msg/ackermann_control_command.hpp>
+#include <autoware_auto_vehicle_msgs/msg/gear_command.hpp>
 
+#include <cmath>
+#include <string>
 #include "f1_planning/f1_planning.hpp"
 
 namespace f1_planning
@@ -31,7 +41,30 @@ public:
 
 private:
   F1PlanningPtr f1_planning_{nullptr};
-  void foo();
+  rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr _sub_laserscan;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr _sub_odometry;
+
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr _pub_goal_pose;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr _pub_twist;
+  rclcpp::Publisher<autoware_auto_control_msgs::msg::AckermannControlCommand>::SharedPtr _pub_ackermann;
+  rclcpp::Publisher<autoware_auto_vehicle_msgs::msg::GearCommand>::SharedPtr _pub_gear;
+
+  geometry_msgs::msg::PoseStamped _last_pose;
+  geometry_msgs::msg::PoseStamped _goal_pose;
+
+  int scan_counter = 0; 
+
+  void create_sub(const std::string topic_scan, const std::string topic_odom);
+  void scan_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg);
+  void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg);
+  void publish_points(double x, double y);
+  void publish_velocity(double angular_vel, double linear_vel);
+
+
+  double max_distance = 5.0; // maksymalna odległość do śledzenia
+  double linear_vel = 1.0; // prędkość liniowa (m/s)
+
+  // add subscriber variable
 };
 }  // namespace f1_planning
 
